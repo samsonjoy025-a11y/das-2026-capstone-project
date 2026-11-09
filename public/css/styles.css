@@ -1,0 +1,140 @@
+:root {
+  --bg: #f7f4ee;
+  --surface: #ffffff;
+  --text: #1f2937;
+  --muted: #5b6472;
+  --line: #d8dde6;
+  --accent: #0f766e;
+  --accent-ink: #ffffff;
+  --danger: #b42318;
+  --danger-bg: #fef3f2;
+  --warn: #92400e;
+  --warn-bg: #fffbeb;
+  --ok-bg: #ecfdf3;
+  --ok: #027a48;
+  --radius: 10px;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: "Segoe UI", Tahoma, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.45;
+}
+.wrap { max-width: 980px; margin: 0 auto; padding: 1.25rem; }
+.site-header {
+  background: #153243;
+  color: #fff;
+}
+.site-header .wrap { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+.brand { color: #fff; text-decoration: none; font-weight: 700; font-size: 1.15rem; }
+.brand:hover, .brand:focus { text-decoration: underline; }
+nav a { color: #d7eef7; margin-left: 0.75rem; }
+nav a:first-child { margin-left: 0; }
+h1, h2, h3 { line-height: 1.2; margin: 0 0 0.5rem; }
+p { margin: 0 0 0.75rem; }
+a { color: var(--accent); }
+.muted { color: var(--muted); }
+
+.filters {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 0.75rem;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 1rem;
+  margin: 1rem 0;
+  align-items: end;
+}
+.field { display: flex; flex-direction: column; gap: 0.3rem; }
+label { font-weight: 600; font-size: 0.92rem; }
+input, select {
+  font: inherit;
+  padding: 0.55rem 0.65rem;
+  border: 1px solid #b8c2d1;
+  border-radius: 8px;
+  background: #fff;
+  color: var(--text);
+}
+input:focus, select:focus, button:focus, a:focus {
+  outline: 3px solid rgba(15, 118, 110, 0.25);
+  outline-offset: 1px;
+}
+button {
+  font: inherit;
+  cursor: pointer;
+  border: 0;
+  border-radius: 8px;
+  padding: 0.6rem 0.9rem;
+  font-weight: 600;
+}
+.btn-primary { background: var(--accent); color: var(--accent-ink); }
+.btn-primary:hover { filter: brightness(0.96); }
+.btn-secondary { background: #e7edf3; color: var(--text); }
+button[disabled] { cursor: not-allowed; opacity: 0.55; }
+
+.grid { display: grid; gap: 1rem; }
+.event-list { grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
+.card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 1rem;
+}
+.card h2, .card h3 { font-size: 1.1rem; }
+.meta { color: var(--muted); font-size: 0.93rem; }
+.price { font-weight: 700; color: #134e4a; }
+.actions { margin-top: 0.75rem; display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center; }
+
+.tiers { display: grid; gap: 0.75rem; margin: 1rem 0; }
+.tier {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.5rem 1rem;
+  align-items: start;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 0.9rem 1rem;
+}
+.tier.sold-out { background: #fafafa; }
+.badge {
+  display: inline-block;
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+.badge-soldout { background: #fee4e2; color: #912018; }
+.badge-ok { background: #dcfce7; color: #166534; }
+
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 1rem;
+  margin: 1rem 0;
+}
+.checkout-form { display: grid; gap: 0.75rem; max-width: 420px; }
+.countdown {
+  font-weight: 700;
+  padding: 0.6rem 0.75rem;
+  border-radius: 8px;
+  background: var(--warn-bg);
+  color: var(--warn);
+  border: 1px solid #f5d38a;
+}
+.countdown.expired { background: var(--danger-bg); color: var(--danger); border-color: #fecdca; }
+.notice { padding: 0.7rem 0.85rem; border-radius: 8px; margin: 0.5rem 0; }
+.notice-error { background: var(--danger-bg); color: var(--danger); border: 1px solid #fecdca; }
+.notice-success { background: var(--ok-bg); color: var(--ok); border: 1px solid #abefc6; }
+.status { min-height: 1.5rem; }
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+}
+@media (max-width: 640px) {
+  .tier { grid-template-columns: 1fr; }
+}

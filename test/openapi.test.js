@@ -3,9 +3,11 @@ import assert from 'node:assert/strict';
 import { openApiDocument } from '../src/http/openapi.js';
 import { Router } from '../src/http/router.js';
 import { registerApiRoutes } from '../src/http/routes.js';
+import { registerAuthRoutes } from '../src/routes/auth.js';
 
 describe('OpenAPI document', () => {
-  const router = registerApiRoutes(new Router(), { eventService: {}, bookingService: {} });
+  const router = registerApiRoutes(new Router(), { eventService: {}, bookingService: {}, waitlistService: {}, checkinService: {} });
+  registerAuthRoutes(router, { authService: {} });
   router.get('/health', () => {});
 
   const operations = Object.entries(openApiDocument.paths).flatMap(([path, methods]) =>
@@ -22,16 +24,26 @@ describe('OpenAPI document', () => {
   it('documents every API route', () => {
     const expected = [
       'GET /health',
+      'POST /api/auth/signup',
+      'POST /api/auth/login',
+      'GET /api/auth/me',
       'POST /api/events',
       'GET /api/events',
       'GET /api/events/{id}',
       'POST /api/events/{id}/tiers',
       'POST /api/events/{id}/publish',
       'POST /api/events/{id}/unpublish',
+      'GET /api/bookings',
       'POST /api/bookings',
       'GET /api/bookings/{reference}',
+      'GET /api/bookings/{reference}/refund-quote',
+      'GET /api/bookings/{reference}/ticket',
       'POST /api/bookings/{reference}/pay',
       'POST /api/bookings/{reference}/cancel',
+      'POST /api/checkin',
+      'POST /api/waitlist',
+      'GET /api/waitlist/offers',
+      'POST /api/waitlist/offers/{id}/accept',
     ];
     assert.deepEqual(operations.map(({ method, path }) => `${method} ${path}`).sort(), expected.sort());
   });

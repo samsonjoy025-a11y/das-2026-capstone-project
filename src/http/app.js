@@ -5,6 +5,7 @@ import { extname, isAbsolute, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { DomainError } from '../domain/errors.js';
 import { Router } from './router.js';
+import { applySecurityHeaders } from './securityHeaders.js';
 
 const DEFAULT_PUBLIC_DIRECTORY = fileURLToPath(new URL('../../public/', import.meta.url));
 const CONTENT_TYPES = {
@@ -22,21 +23,33 @@ const CONTENT_TYPES = {
 };
 
 // The one place where an error code becomes an HTTP status.
-// Any DomainError code not listed here is a 400.
 const STATUS_BY_CODE = {
   VALIDATION: 400,
   INVALID_JSON: 400,
   INVALID_PATH: 400,
+  INVALID_TICKET: 400,
   UNAUTHENTICATED: 401,
+  INVALID_CREDENTIALS: 401,
   PAYMENT_DECLINED: 402,
   FORBIDDEN: 403,
   NOT_FOUND: 404,
+  EMAIL_TAKEN: 409,
   SOLD_OUT: 409,
+  NOT_SOLD_OUT: 409,
+  ALREADY_ON_WAITLIST: 409,
   INVALID_STATE: 409,
   INVALID_TRANSITION: 409,
+  EVENT_STARTED: 409,
+  BOOKING_EXPIRED: 409,
+  OFFER_EXPIRED: 409,
+  DUPLICATE_SCAN: 409,
+  WRONG_EVENT: 409,
+  RATE_LIMITED: 429,
+  INTERNAL_ERROR: 500,
 };
 
 function sendJson(response, status, body) {
+  applySecurityHeaders(response);
   response.writeHead(status, { 'content-type': 'application/json; charset=utf-8' });
   response.end(JSON.stringify(body));
 }
@@ -70,7 +83,6 @@ async function servePublicFile(response, pathname, publicDirectory, method) {
   }
 
   const root = resolve(publicDirectory);
-  // "/" is index.html, and a path with no extension is an .html page: /docs -> docs.html.
   const filePath = decodedPath === '/' ? '/index.html' : extname(decodedPath) ? decodedPath : `${decodedPath}.html`;
   const requestedPath = resolve(root, `.${filePath}`);
   const relativePath = relative(root, requestedPath);
@@ -126,6 +138,7 @@ export function createAppServer({ router = new Router(), publicDirectory = DEFAU
 
   return createServer(async (request, response) => {
     try {
+      applySecurityHeaders(response);
       const url = new URL(request.url, 'http://localhost');
       const route = router.match(request.method ?? 'GET', url.pathname);
       const body = await readJsonBody(request);
@@ -150,6 +163,7 @@ export function createAppServer({ router = new Router(), publicDirectory = DEFAU
         sendError(response, STATUS_BY_CODE[error.code] ?? 400, error.code, error.message);
         return;
       }
+      // Never leak internals.
       sendError(response, 500, 'INTERNAL_ERROR', 'An unexpected error occurred');
     }
   });

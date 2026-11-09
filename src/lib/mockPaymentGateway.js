@@ -1,15 +1,4 @@
 // A pretend payment provider. No real money moves.
-//
-// It never sees a card number. In a real shop the browser sends the card to the
-// provider and gets back a token; we only ever pass that token along.
-// For the mock, the token decides the outcome:
-//   'tok_success'  -> the charge succeeds
-//   'tok_declined' -> the charge is declined
-// Any other token is treated as declined as well.
-//
-// charge() is idempotent: a second successful call with the same key returns the
-// first charge instead of charging again. A declined attempt is not remembered,
-// so the attendee can try again with another card.
 
 import { newId } from '../domain/ids.js';
 
@@ -18,7 +7,9 @@ export const DECLINED_TOKEN = 'tok_declined';
 
 export function createMockPaymentGateway({ delayMs = 0 } = {}) {
   const chargesByKey = new Map();
+  const refundsByKey = new Map();
   let chargeCount = 0;
+  let refundCount = 0;
 
   return {
     async charge({ amountCents, paymentToken, idempotencyKey }) {
@@ -37,9 +28,23 @@ export function createMockPaymentGateway({ delayMs = 0 } = {}) {
       return result;
     },
 
-    // For tests: how many times money was actually taken.
+    async refund({ chargeId, amountCents, idempotencyKey }) {
+      if (delayMs > 0) await new Promise((resolve) => setTimeout(resolve, delayMs));
+      if (idempotencyKey) {
+        const previous = refundsByKey.get(idempotencyKey);
+        if (previous) return previous;
+      }
+      refundCount += 1;
+      const result = { status: 'succeeded', refundId: `re_${newId()}`, chargeId, amountCents };
+      if (idempotencyKey) refundsByKey.set(idempotencyKey, result);
+      return result;
+    },
+
     get chargeCount() {
       return chargeCount;
+    },
+    get refundCount() {
+      return refundCount;
     },
   };
 }

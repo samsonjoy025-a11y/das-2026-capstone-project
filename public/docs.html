@@ -10,12 +10,6 @@
     <!-- Scalar renders /openapi.json as interactive docs. It runs in the browser
          only; the project itself still has no outside packages. -->
     <script src="https://cdn.jsdelivr.net/npm/@scalar/api-reference@1.72.4/dist/browser/standalone.js"></script>
-    <script>
-      Scalar.createApiReference('#app', {
-        url: '/openapi.json',
-        // Pre-select the x-user-id header so "Test Request" works straight away.
-        authentication: { preferredSecurityScheme: 'UserId' },
-      });
-    </script>
+    <script src="/js/docs-init.js"></script>
   </body>
 </html>

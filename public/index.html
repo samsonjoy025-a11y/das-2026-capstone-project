@@ -1,14 +1,29 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Event Ticketing</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Event Ticketing — Browse events</title>
+    <link rel="stylesheet" href="/css/styles.css" />
   </head>
   <body>
-    <main>
-      <h1>Event Ticketing</h1>
-      <p>The Build 4 server is running. Read the <a href="/docs">API docs</a>.</p>
+    <header class="site-header">
+      <div class="wrap">
+        <a class="brand" href="/index.html">Event Ticketing</a>
+        <nav aria-label="Main">
+          <a href="/index.html">Browse</a>
+          <a href="/tickets.html">My tickets</a>
+          <a href="/organizer.html">Organizer</a>
+          <a href="/checkin.html">Check-in</a>
+          <a href="/login.html">Log in</a>
+          <a href="/docs">API docs</a>
+        </nav>
+      </div>
+    </header>
+    <main class="wrap">
+      <div id="app"></div>
+      <noscript><p>JavaScript is required to browse events.</p></noscript>
     </main>
+    <script type="module" src="/js/pages/home-init.js"></script>
   </body>
 </html>

@@ -56,7 +56,9 @@ describe('HTTP app', () => {
   it('serves an extensionless path as its .html page', async () => {
     const response = await fetch(`${baseUrl}/docs`);
     assert.equal(response.status, 200);
-    assert.match(await response.text(), /createApiReference/);
+    const html = await response.text();
+    assert.match(html, /scalar\/api-reference/);
+    assert.match(html, /\/js\/docs-init\.js/);
   });
 
   it('does not serve files outside public', async () => {
